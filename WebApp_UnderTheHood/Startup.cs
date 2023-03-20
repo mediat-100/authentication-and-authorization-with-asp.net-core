@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApp_UnderTheHood.Pages;
+using WebApp_UnderTheHood.Pages.Authorization;
 
 namespace WebApp_UnderTheHood
 {
@@ -51,6 +51,18 @@ namespace WebApp_UnderTheHood
             services.AddSingleton<IAuthorizationHandler, HRManagerProbationRequirementHandler>();
 
             services.AddRazorPages();
+
+            services.AddHttpClient("OurWebAPI", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44374/");
+            });
+
+            services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.IdleTimeout = TimeSpan.FromHours(8);
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +86,8 @@ namespace WebApp_UnderTheHood
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

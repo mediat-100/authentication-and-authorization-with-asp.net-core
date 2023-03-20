@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace WebApp_UnderTheHood.Pages
+namespace WebApp_UnderTheHood.Pages.Authorization
 {
     public class HRManagerProbationRequirement : IAuthorizationRequirement
     {
