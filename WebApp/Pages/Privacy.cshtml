@@ -6,3 +6,8 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+
+<form method="post" class="form-inline" asp-page="/Privacy">
+        <div class="text-danger" asp-validation-summary="All"></div>
+		<button type="submit" class="ml-2 btn btn-link">Enable 2FA</button>
+</form>
