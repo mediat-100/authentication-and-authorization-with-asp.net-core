@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,8 +24,12 @@ namespace WebApp.Pages.Account
 
         [BindProperty]
         public CredentialViewModel CredentialViewModel { get; set; }
-        public void OnGet()
+
+        [BindProperty]
+        public IEnumerable<AuthenticationScheme> ExternalLoginProviders { get; set; }
+        public async Task OnGet()
         {
+            this.ExternalLoginProviders = await signInManager.GetExternalAuthenticationSchemesAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -80,6 +87,17 @@ namespace WebApp.Pages.Account
 
                 return Page();
             }
+        }
+
+        public IActionResult OnPostLoginExternally(string provider)
+        {
+            // contains info from the app been sent to the provider 
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, null);
+            // callback uri(redirect uri passed in the settings of the provider), enables user to login 
+            properties.RedirectUri = Url.Action("ExternalLoginCallback", "Account");
+
+            // redirects to the provider
+            return Challenge(properties, provider);
         }
     }
 
